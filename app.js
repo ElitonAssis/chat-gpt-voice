@@ -1,13 +1,4 @@
 
-document.addEventListener("DOMContentLoaded", () => {
-    if ('speechSynthesis' in window)
-        console.log('Seu navegador suporta speechSynthesis.');
-    else {
-        console.log('Seu navegador não suporta speechSynthesis.');
-    }
-})
-
-
 class Speech {
     constructor(text, lang = 'pt-BR', pitch = 1, rate = 1, volume = 3) {
         this.text = text;
@@ -17,7 +8,7 @@ class Speech {
         this.volume = volume;
     }
     start() {
-        var fala = new SpeechSynthesisUtterance();
+        let fala = new SpeechSynthesisUtterance();
         fala.text = this.text;
         fala.lang = this.lang;
         fala.pitch = this.pitch;
@@ -27,36 +18,44 @@ class Speech {
     }
 }
 
-//let resposta = document.getElementsByClassName("markdown")
-
-let input = document.getElementById("input")
-
- //input.value = resposta[resposta.length - 1].value
-let timerId;
-input.addEventListener("input", () => {
-    clearTimeout(timerId);
-    timerId = setTimeout(() => {
-        new Speech(input.value).start();
-    }, 1000);
-});
 
 
 
+document.querySelector('textarea').parentElement.querySelector('button').addEventListener('click', () => {
+
+    let timerId;
+    let input = document.createElement('input')
+    input.setAttribute('type', 'text')
+    console.log(input)
+
+
+   
+
+    let teste = setTimeout(() => {
+
+        let divs = document.querySelectorAll('.markdown')
+        console.log(divs)
+        if (divs.length > 0)
+            input.value = divs[divs.length - 1]?.firstChild.innerHTML
+        else {
+            teste()
+        }
+    }, 500)
+
+
+
+    input.addEventListener("input", () => {
+        console.log('PASSOU AQUI...............')
+
+        clearTimeout(timerId);
+        timerId = setTimeout(() => {
+            new Speech(input.value).start();
+        }, 1000);
+    });
+})
 
 
 
 
 
 
-
-
-// markdown prose w-full break-words dark:prose-invert dark
-
-
-
-
-
-
-
-// transformar em palavra a cada espaço
-// a cada palavra a func é chamada
