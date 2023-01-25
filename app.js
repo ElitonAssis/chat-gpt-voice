@@ -55,6 +55,8 @@ document.querySelector('textarea').parentElement.querySelector('button').addEven
 })
 
 
+// a cada espaço na frase add a palavra em um array da uma for jogando palavra por palavra no metodo da class
+
 
 
 
