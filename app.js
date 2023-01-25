@@ -1,4 +1,4 @@
-
+  
 class Speech {
     constructor(text, lang = 'pt-BR', pitch = 1, rate = 1, volume = 3) {
         this.text = text;
