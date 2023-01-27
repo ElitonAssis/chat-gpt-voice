@@ -1,4 +1,4 @@
-  
+
 class Speech {
     constructor(text, lang = 'pt-BR', pitch = 1, rate = 1, volume = 3) {
         this.text = text;
@@ -20,39 +20,74 @@ class Speech {
 
 
 
-
-document.querySelector('textarea').parentElement.querySelector('button').addEventListener('click', () => {
-
-    let timerId;
-    let input = document.createElement('input')
-    input.setAttribute('type', 'text')
-    console.log(input)
+let previousTxt;
 
 
-   
+let timerId;
 
-    let teste = setTimeout(() => {
+let parar = false
 
-        let divs = document.querySelectorAll('.markdown')
-        console.log(divs)
-        if (divs.length > 0)
-            input.value = divs[divs.length - 1]?.firstChild.innerHTML
-        else {
-            teste()
+let btn = document.querySelector('textarea').parentElement.querySelector('button')
+
+let input = document.createElement('input')
+
+input.setAttribute('type', 'text')
+
+
+function teste() {
+    setTimeout(() => {
+        if (parar) return;
+
+        let divs = document.querySelectorAll('.markdown');
+
+        if (divs.length > 0) {
+
+            let txt = divs[divs.length - 1]?.firstChild.innerHTML;
+
+            if (!!txt && txt.trim() != "" && txt !== previousTxt) {
+
+                console.log(txt, 'valor txt')
+                previousTxt = txt;
+
+            } else {
+                input.value = txt;
+                parar = true;
+                new Speech(txt).start();
+            }
         }
-    }, 500)
+
+        if (!parar) teste();
+    }, 1000);
+}
 
 
 
-    input.addEventListener("input", () => {
-        console.log('PASSOU AQUI...............')
+// function voz() {
+//     console.log(input.value,'valor do input')
+//     clearTimeout(timerId);
+//     timerId = setTimeout(() => {
+//         parar = true;
+//         new Speech(input.value).start();
+//         input.value = ""
+//     }, 1000);
+// }
 
-        clearTimeout(timerId);
-        timerId = setTimeout(() => {
-            new Speech(input.value).start();
-        }, 1000);
-    });
+btn.addEventListener('click', () => {
+    parar = false
+    teste()
+
+  //  input.addEventListener("input", voz)
 })
+
+// clica 
+// pega valor da div 
+// se div tem valores repetidos a cada 1 segundos para
+// quando parar input recebe valor e dispara evento || chama metodo da class
+
+
+
+
+
 
 
 // a cada espaço na frase add a palavra em um array da uma for jogando palavra por palavra no metodo da class
