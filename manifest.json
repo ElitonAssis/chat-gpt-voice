@@ -5,7 +5,8 @@
   "description": "A brief description of my extension",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "tabs"
   ],
   "action": {
     "default_popup": "index.html"
@@ -20,4 +21,14 @@
       ]
     }
   ]
+  
+ 
 }
+
+
+
+
+
+
+
+

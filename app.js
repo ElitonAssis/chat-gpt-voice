@@ -1,11 +1,8 @@
-
-document.addEventListener("DOMContentLoaded", () => {
-    if ('speechSynthesis' in window)
-        console.log('Seu navegador suporta speechSynthesis.');
-    else {
-        console.log('Seu navegador não suporta speechSynthesis.');
-    }
-})
+//class criada pelo chatGpt
+window.onload = run();
+function run() {
+    console.log('carregado')
+}
 
 
 class Speech {
@@ -17,7 +14,7 @@ class Speech {
         this.volume = volume;
     }
     start() {
-        var fala = new SpeechSynthesisUtterance();
+        let fala = new SpeechSynthesisUtterance();
         fala.text = this.text;
         fala.lang = this.lang;
         fala.pitch = this.pitch;
@@ -25,20 +22,84 @@ class Speech {
         fala.volume = this.volume;
         speechSynthesis.speak(fala)
     }
+    capture() {
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = this.lang;
+        recognition.start();
+        recognition.onresult = (event) => {
+            const text = event.results[0][0].transcript;
+            console.log(text);
+        };
+    }
+
 }
 
-//let resposta = document.getElementsByClassName("markdown")
+debugger
 
-let input = document.getElementById("input")
+let previousTxt
+let parar = false
+let btn
+setTimeout(() => {
+    btn = document.querySelector('textarea').parentElement.querySelector('button')
+    console.log(btn)
+    btn.addEventListener('click', () => {
+        console.log('btn clicked')
+        previousTxt = null
+        parar = false
+        getVoice()
+    })
+}, 2000)
 
- //input.value = resposta[resposta.length - 1].value
-let timerId;
-input.addEventListener("input", () => {
-    clearTimeout(timerId);
-    timerId = setTimeout(() => {
-        new Speech(input.value).start();
-    }, 1000);
-});
+// while (btn == null) {
+//     getBtn()
+// }
+
+// function setEvent() {
+//     console.log('btn clicked')
+//     previousTxt = null
+//     parar = false
+//     getVoice()
+// }
+// function getBtn() {
+//     btn = document.querySelector('textarea').parentElement.querySelector('button')
+//     console.log(btn)
+
+//     if (!!btn) {
+//         btn.onclick = setEvent
+//         return
+//     } else
+//         getBtn()
+// }
+
+// function captureVoice() {
+//     const input = document.querySelector('textarea');
+//     console.log(input)
+// }
+
+
+
+
+function getVoice() {
+    setTimeout(() => {
+        if (parar) return;
+
+        let divs = document.querySelectorAll('.markdown');
+        if (divs.length > 0) {
+            txt = divs[divs.length - 1]?.firstChild.innerHTML;
+
+            if (!!txt && !/^\s*$/.test(txt)) {
+                if (txt !== previousTxt)
+                    previousTxt = txt
+                else {
+                    parar = true;
+                    console.log(txt)
+                    new Speech(txt).start();
+                }
+            }
+        }
+        if (!parar) getVoice();
+    }, 1250);
+}
 
 
 
@@ -47,16 +108,3 @@ input.addEventListener("input", () => {
 
 
 
-
-
-
-// markdown prose w-full break-words dark:prose-invert dark
-
-
-
-
-
-
-
-// transformar em palavra a cada espaço
-// a cada palavra a func é chamada
