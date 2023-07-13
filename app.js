@@ -1,17 +1,20 @@
-//class criada pelo chatGpt
+
 window.onload = run();
 function run() {
     console.log('carregado')
+    setTimeout(() => new Exc(), 2000);
 }
 
 
 class Speech {
-    constructor(text, lang = 'pt-BR', pitch = 1, rate = 1, volume = 3) {
+    constructor(text, lang = 'pt-BR', pitch = 1, rate = 3, volume = 3) {
         this.text = text;
         this.lang = lang;
         this.pitch = pitch;
         this.rate = rate;
         this.volume = volume;
+
+        this.start();
     }
     start() {
         let fala = new SpeechSynthesisUtterance();
@@ -22,84 +25,76 @@ class Speech {
         fala.volume = this.volume;
         speechSynthesis.speak(fala)
     }
-    capture() {
-        const recognition = new webkitSpeechRecognition();
-        recognition.lang = this.lang;
-        recognition.start();
-        recognition.onresult = (event) => {
-            const text = event.results[0][0].transcript;
-            console.log(text);
-        };
+}
+
+class Exc {
+    previousTxt;
+    parar;
+    btn;
+    txt;
+
+    constructor() {
+        this.btn = null;
+        this.getBtn();
     }
 
-}
+    reset() {
+        this.parar = false;
+        this.previousTxt = null;
+        this.txt = null;
+    }
 
-debugger
+    getBtn() {
+        while (!this.btn) {
+            this.reset();
+            this.btn = document.querySelector('textarea').parentElement.querySelector('button');
+        };
 
-let previousTxt
-let parar = false
-let btn
-setTimeout(() => {
-    btn = document.querySelector('textarea').parentElement.querySelector('button')
-    console.log(btn)
-    btn.addEventListener('click', () => {
-        console.log('btn clicked')
-        previousTxt = null
-        parar = false
-        getVoice()
-    })
-}, 2000)
+        return this.btn.addEventListener('click', () => {
+            this.reset();
+            this.getVoice();
+        })
+    }
 
-// while (btn == null) {
-//     getBtn()
-// }
-
-// function setEvent() {
-//     console.log('btn clicked')
-//     previousTxt = null
-//     parar = false
-//     getVoice()
-// }
-// function getBtn() {
-//     btn = document.querySelector('textarea').parentElement.querySelector('button')
-//     console.log(btn)
-
-//     if (!!btn) {
-//         btn.onclick = setEvent
-//         return
-//     } else
-//         getBtn()
-// }
-
-// function captureVoice() {
-//     const input = document.querySelector('textarea');
-//     console.log(input)
-// }
-
-
-
-
-function getVoice() {
-    setTimeout(() => {
-        if (parar) return;
-
-        let divs = document.querySelectorAll('.markdown');
-        if (divs.length > 0) {
-            txt = divs[divs.length - 1]?.firstChild.innerHTML;
-
-            if (!!txt && !/^\s*$/.test(txt)) {
-                if (txt !== previousTxt)
-                    previousTxt = txt
-                else {
-                    parar = true;
-                    console.log(txt)
-                    new Speech(txt).start();
+    getVoice() {
+        setTimeout(async () => {
+            if (this.parar) return this.getVoice();
+            console.log('passou')
+            const divs = document.querySelectorAll('.markdown');
+            if (divs.length === 0) return this.getVoice();
+            this.txt = divs[divs.length - 1]?.firstChild.innerHTML;
+            if (!this.txt || this.txt.trim() === "" || this.txt.length <= 1) return this.getVoice();
+            if (this.txt !== this.previousTxt) this.previousTxt = this.txt;
+            else {
+                this.parar = true;
+                console.log(this.txt, 'falado')
+                try {
+                    new Speech(this.txt.trim())
+                  //  for (let p of this.txt.split(' ')) await this.promise(p);
+                } finally {
+                    this.previousTxt = null;
+                    this.txt = null;
                 }
             }
-        }
-        if (!parar) getVoice();
-    }, 1250);
+            if (!this.parar) return this.getVoice();
+            return;
+        }, 1500);
+    }
+    promise(palavra) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.log(palavra)
+                resolve(new Speech(palavra))
+            }, 700)
+        })
+    }
+
+
 }
+
+
+
+
 
 
 
